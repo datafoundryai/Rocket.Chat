@@ -262,7 +262,7 @@ export abstract class Streamer<N extends keyof StreamerEvents> extends EventEmit
 		if (!subscriptions?.size) {
 			return false;
 		}
-
+		
 		if (transform) {
 			void this.sendToManySubscriptions(subscriptions, origin, eventName, args, transform);
 

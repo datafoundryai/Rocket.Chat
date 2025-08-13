@@ -44,6 +44,7 @@ import { useEnablePopupPreview } from '../hooks/useEnablePopupPreview';
 import { useMessageComposerMergedRefs } from '../hooks/useMessageComposerMergedRefs';
 import { useMessageBoxAutoFocus } from './hooks/useMessageBoxAutoFocus';
 import { useMessageBoxPlaceholder } from './hooks/useMessageBoxPlaceholder';
+import { useEffect } from 'react';
 
 const reducer = (_: unknown, event: FormEvent<HTMLInputElement>): boolean => {
 	const target = event.target as HTMLInputElement;
@@ -123,6 +124,16 @@ const MessageBox = ({
 		throw new Error('Chat context not found');
 	}
 
+	// Clear draft when room changes to prevent cross-room draft bleeding
+	useEffect(() => {
+		if (chat.composer?.text?.trim() && localStorage.getItem("QA_BUG_ERASE_DRAFT")==="1") {
+			// Clear the composer text when switching rooms
+			chat.composer.clear();
+			// Also discard any saved drafts for the previous room
+			chat.data.discardDraft(tmid);
+		}
+	}, []);
+
 	const textareaRef = useRef(null);
 	const messageComposerRef = useRef<HTMLElement>(null);
 
@@ -192,6 +203,14 @@ const MessageBox = ({
 		const isSubmitKey = keyCode === keyCodes.CARRIAGE_RETURN || keyCode === keyCodes.NEW_LINE;
 
 		if (isSubmitKey) {
+			// QA benchmark demo bug: when enabled via localStorage, Shift+Enter sends instead of inserting a newline
+			const qaBugShiftEnterSend = typeof window !== 'undefined' && window.localStorage?.getItem('QA_BUG_SHIFT_ENTER_SEND') === '1';
+			if (qaBugShiftEnterSend && event.shiftKey) {
+				event.preventDefault();
+				handleSendMessage();
+				return false;
+			}
+
 			const withModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey;
 			const isSending = (sendOnEnter && !withModifier) || (!sendOnEnter && withModifier);
 
@@ -338,6 +357,9 @@ const MessageBox = ({
 			.filter((file): file is File => !!file);
 
 		if (files.length) {
+			if(localStorage?.getItem('QA_BUG_PASTE_IMAGE_CLEARS_TEXT') === "1"){
+				chat.composer?.clear();
+			}
 			event.preventDefault();
 			onUploadFiles?.(files);
 		}

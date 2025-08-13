@@ -1,7 +1,7 @@
 import type { IMessage, ISubscription } from '@rocket.chat/core-typings';
 import { useToastMessageDispatch } from '@rocket.chat/ui-contexts';
 import type { ReactElement, ReactNode } from 'react';
-import { memo, useMemo, useSyncExternalStore } from 'react';
+import { memo, useEffect, useMemo, useSyncExternalStore } from 'react';
 
 import ComposerSkeleton from './ComposerSkeleton';
 import { LegacyRoomManager } from '../../../../app/ui-utils/client';
@@ -28,6 +28,7 @@ const ComposerMessage = ({ tmid, onSend, ...props }: ComposerMessageProps): Reac
 	const chat = useChat();
 	const room = useRoom();
 	const dispatchToastMessage = useToastMessageDispatch();
+
 
 	const composerProps = useMemo(
 		() => ({

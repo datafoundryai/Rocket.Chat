@@ -23,7 +23,10 @@ const Reactions = ({ message, ...props }: ReactionsProps): ReactElement => {
 	const toggleReactionMutation = useToggleReactionMutation();
 	const { toolbarProps } = useToolbar(props, ref);
 	const buttonProps = useButtonPattern(openEmojiPicker);
-
+	
+	// BUG: Reaction count mismatch after undo
+	const qaBugReactionCountMismatch = localStorage?.getItem('QA_BUG_REACTION_COUNT_MISMATCH') === '1';
+		
 	return (
 		<MessageReactions ref={ref} {...toolbarProps} {...props}>
 			{message.reactions &&
@@ -35,7 +38,7 @@ const Reactions = ({ message, ...props }: ReactionsProps): ReactElement => {
 						name={name}
 						names={reactions.usernames.filter((user) => user !== username).map((username) => `@${username}`)}
 						messageId={message._id}
-						onClick={() => toggleReactionMutation.mutate({ mid: message._id, reaction: name })}
+						onClick={() => toggleReactionMutation.mutate({ mid: message._id, reaction: name, hasReacted:hasReacted(name),createFolt:qaBugReactionCountMismatch })}
 					/>
 				))}
 			<MessageReactionAction title={t('Add_Reaction')} {...buttonProps} />

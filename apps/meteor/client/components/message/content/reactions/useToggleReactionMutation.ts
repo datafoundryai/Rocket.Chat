@@ -6,6 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 type UseToggleReactionMutationVariables = {
 	mid: IMessage['_id'];
 	reaction: string;
+	createFolt?:boolean
+	hasReacted?:boolean
 };
 
 export const useToggleReactionMutation = (
@@ -15,11 +17,12 @@ export const useToggleReactionMutation = (
 	const reactToMessage = useEndpoint('POST', '/v1/chat.react');
 
 	return useMutation({
-		mutationFn: async ({ mid, reaction }) => {
+		mutationFn: async ({ mid, reaction, createFolt,hasReacted }) => {
 			if (!uid) {
 				throw new Error('Not logged in');
 			}
 
+			if(!hasReacted && !createFolt)
 			await reactToMessage({ messageId: mid, reaction });
 		},
 
