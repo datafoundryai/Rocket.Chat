@@ -1,18 +1,19 @@
 Bug	Description	Steps to reproduce	Difficulty
-Muted channel shows desktop notifications	Muting a room doesn't fully suppress desktop notifications.	"1) Mute a busy channel
-2) Enable desktop notifications
-3) Receive mentions/non-mentions
-4) Notifications still appear"	Medium
+Shift+Enter sends the message	Shift+Enter sends the message instead of inserting a newline in the message composer.	"1) Open message composer
+2) Press Shift+Enter
+3) Message is sent instead of newline inserted"	Medium
+Muted channel shows desktop notifications	Muting a room doesn't fully suppress desktop notifications.	"1) In a channel, open Room → Notifications → set Desktop: 'Nothing' (muted)
+2) From another user, send a message in that channel
+3) Desktop notification still appears"	Medium
 Draft lost when switching rooms	Composer draft disappears when navigating between rooms quickly.	"1) Type a long draft in #general
 2) Switch to another room and back within 2s
 3) Draft is gone"	Hard
-Shift+Enter newline breaks after emoji	After inserting emoji, Shift+Enter inserts nothing or sends message.	"1) Open composer
-2) Insert emoji via picker
-3) Press Shift+Enter
-4) No newline or message sent unexpectedly"	Medium
-Reaction count mismatch after undo	Adding then removing a reaction leaves a stale count.	"1) React to a message
-2) Remove same reaction
+Paste image clears typed text	Pasting an image attachment clears existing typed text.	"1) Type a sentence in the composer
+2) Paste an image from clipboard
+3) Text disappears; only image remains"	Medium
+Reaction count mismatch after undo	Adding then removing a reaction leaves a stale count visible to other users.	"1) React to a message
+2) Remove the same reaction
 3) Counter remains at 1 for other viewers until refresh"	Hard
-Edit not reflected in thread preview	Editing a thread reply doesn't update the parent thread preview snippet.	"1) Reply in a thread
-2) Edit the reply text
-3) Thread list preview shows old content"	Medium
+Thread counter not decremented	Deleting the last reply in a thread keeps the thread count > 0.	"1) Create thread with 1 reply
+2) Delete the reply
+3) Thread counter remains 1"	Medium
