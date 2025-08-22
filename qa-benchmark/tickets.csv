@@ -1,0 +1,25 @@
+Bug	Description	Steps to reproduce	Difficulty
+Shift+Enter sends the message	Shift+Enter sends the message instead of inserting a newline in the message composer.	"1) Open message composer
+2) Press Shift+Enter
+3) Message is sent instead of newline inserted"	Medium
+Muted channel shows desktop notifications	Muting a room doesn't fully suppress desktop notifications.	"1) In a channel, open Room → Notifications → set Desktop: 'Nothing' (muted)
+2) From another user, send a message in that channel
+3) Desktop notification still appears"	Medium
+Draft lost when switching rooms	Composer draft disappears when navigating between rooms quickly.	"1) Type a long draft in #general
+2) Switch to another room and back within 2s
+3) Draft is gone"	Hard
+Paste image clears typed text	Pasting an image attachment clears existing typed text.	"1) Type a sentence in the composer
+2) Paste an image from clipboard
+3) Text disappears; only image remains"	Medium
+Reaction count mismatch after undo	Adding then removing a reaction leaves a stale count visible to other users.	"1) React to a message
+2) Remove the same reaction
+3) Counter remains at 1 for other viewers until refresh"	Hard
+Thread counter not decremented	Deleting the last reply in a thread keeps the thread count > 0.	"1) Create thread with 1 reply
+2) Delete the reply
+3) Thread counter remains 1"	Medium
+Forwarded thread shows random strings	Forwarded thread messages display random strings instead of actual content.	"1) Create a thread with messages
+2) Forward a message from the thread to another channel
+3) Quoted content shows random strings instead of actual text"	Hard
+Thread Shift+Enter sends message	Shift+Enter sends message instead of new line when composing in threads.	"1) Open a thread and start composing a message
+2) Press Shift+Enter expecting a new line
+3) Message gets sent instead"	Hard

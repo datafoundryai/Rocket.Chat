@@ -28,6 +28,7 @@ const Reaction = ({ hasReacted, counter, name, names, messageId, onClick, ...pro
 
 	const mine = hasReacted(name);
 
+
 	const emojiProps = getEmojiClassNameAndDataTitle(name);
 	const buttonProps = useButtonPattern(onClick);
 

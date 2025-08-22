@@ -31,6 +31,10 @@ export const useNotifyUser = (user: IUser) => {
 	const notifyNewMessageAudioAndDesktop = useEffectEvent((notification: INotificationDesktop) => {
 		const hasFocus = document.hasFocus();
 
+		// QA benchmark demo bug: when enabled via localStorage, always play sound regardless of focus/mute
+		const qaBugForceSound = typeof window !== 'undefined' && window.localStorage?.getItem('QA_BUG_FORCE_SOUND') === '1';
+
+		console.log({ qaBugForceSoundFEEEE:qaBugForceSound, notification });
 		const openedRoomId = ['channel', 'group', 'direct'].includes(router.getRouteName() || '') ? RoomManager.opened : undefined;
 
 		const { rid } = notification.payload;
@@ -41,6 +45,13 @@ export const useNotifyUser = (user: IUser) => {
 			fromOpenedRoom: messageIsInOpenedRoom,
 			hasFocus,
 		});
+
+		// QA bug: force sound when flag is set
+		if (qaBugForceSound) {
+			newMessageNotification(notification.payload);
+			showDesktopNotification(notification);
+			return;
+		}
 
 		if (isLayoutEmbedded) {
 			if (!hasFocus && messageIsInOpenedRoom) {
@@ -54,6 +65,7 @@ export const useNotifyUser = (user: IUser) => {
 			showDesktopNotification(notification);
 		}
 	});
+
 
 	useEffect(() => {
 		const unsubNotification = notifyUserStream(`${user._id}/notification`, notifyNewMessageAudioAndDesktop);

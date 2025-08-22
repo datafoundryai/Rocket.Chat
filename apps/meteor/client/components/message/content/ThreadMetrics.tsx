@@ -37,7 +37,18 @@ const ThreadMetrics = ({ unread, mention, all, rid, mid, counter, participants, 
 	const { ref, borderBoxSize } = useResizeObserver<HTMLDivElement>();
 
 	const isSmall = (borderBoxSize.inlineSize || Infinity) < 320;
+	
+	// BUG: Thread counter not decremented
+	// This simulates the "Thread counter not decremented" bug
+	const qaBugThreadCounterNotDecremented = typeof window !== 'undefined' && 
+		window.localStorage?.getItem('QA_BUG_THREAD_COUNTER_NOT_DECREMENTED') === '1';
 
+	// Show incorrect reply count when bug is enabled
+	const displayCounter = qaBugThreadCounterNotDecremented ? 
+		Math.max(1, counter) : // Keep count at minimum 1 even when no replies exist
+		counter;
+
+	console.log({displayCounter})
 	return (
 		<MessageBlock ref={ref}>
 			<MessageMetrics>
@@ -56,9 +67,9 @@ const ThreadMetrics = ({ unread, mention, all, rid, mid, counter, participants, 
 				<MessageMetricsItem title={t('Last_message__date__', { date: format(lm) })}>
 					<MessageMetricsItemIcon name='thread' />
 					{isSmall ? (
-						<MessageMetricsItemLabel>{t('__count__replies', { count: counter })}</MessageMetricsItemLabel>
+						<MessageMetricsItemLabel>{t('__count__replies', { count: displayCounter })}</MessageMetricsItemLabel>
 					) : (
-						<MessageMetricsItemLabel>{t('__count__replies__date__', { count: counter, date: format(lm) })}</MessageMetricsItemLabel>
+						<MessageMetricsItemLabel>{t('__count__replies__date__', { count: displayCounter, date: format(lm) })}</MessageMetricsItemLabel>
 					)}
 				</MessageMetricsItem>
 			</MessageMetrics>

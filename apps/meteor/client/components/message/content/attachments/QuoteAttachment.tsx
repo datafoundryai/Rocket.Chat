@@ -39,6 +39,56 @@ export const QuoteAttachment = ({ attachment }: QuoteAttachmentProps): ReactElem
 	const formatTime = useTimeAgo();
 	const displayAvatarPreference = useUserPreference<boolean>('displayAvatars');
 
+	// BUG: Forwarded Thread Messages Show Random Strings
+	// This simulates the "Forwarded Thread Messages Show Random Strings" bug
+	const qaBugForwardedThreadRandom = typeof window !== 'undefined' && 
+		localStorage.getItem('QA_BUG_FORWARDED_THREAD_RANDOM') === '1';
+
+
+	// Generate random strings for forwarded thread messages
+	const generateRandomString = (length: number = 10): string => {
+		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+		let result = '';
+		for (let i = 0; i < length; i++) {
+			result += characters.charAt(Math.floor(Math.random() * characters.length));
+		}
+		return result;
+	};
+
+	console.log({attachment});
+
+	// Check if this is a forwarded message that's part of a thread
+	const isForwardedThreadMessage = attachment.message_link;
+
+	let displayText = attachment.text;
+	let displayMd = attachment.md;
+
+	if (qaBugForwardedThreadRandom && isForwardedThreadMessage) {
+		console.log('QA Bug: Forwarded thread message detected, showing random content');
+		
+		// Replace the actual content with random strings
+		displayText = generateRandomString(15) + ' ' + generateRandomString(8) + ' ' + generateRandomString(12);
+		
+		// Fix: Properly handle the md content
+		const randomMd = `**${generateRandomString(6)}** *${generateRandomString(9)}* \`${generateRandomString(5)}\``;
+		
+		// If md is an array (structured format), modify it properly
+		if (Array.isArray(displayMd)) {
+			// Create a new array with corrupted content
+			displayMd = [
+				{
+					type: "PARAGRAPH",
+					value: [
+						{
+							type: "PLAIN_TEXT",
+							value: randomMd
+						}
+					]
+				}
+			];
+		} 
+	}
+
 	return (
 		<>
 			<AttachmentContent className={quoteStyles} width='full'>
@@ -71,7 +121,7 @@ export const QuoteAttachment = ({ attachment }: QuoteAttachmentProps): ReactElem
 							<Attachments attachments={attachment.attachments} id={attachment.attachments[0]?.title_link} />
 						</AttachmentInner>
 					)}
-					{attachment.md ? <MessageContentBody md={attachment.md} /> : attachment.text.substring(attachment.text.indexOf('\n') + 1)}
+					{attachment.md ? <MessageContentBody md={displayMd} /> : displayText.substring(displayText.indexOf('\n') + 1)}
 				</AttachmentDetails>
 			</AttachmentContent>
 		</>
