@@ -211,6 +211,15 @@ const MessageBox = ({
 				return false;
 			}
 
+
+			const qaBugThreadShiftEnterSend = typeof window !== 'undefined' && window.localStorage?.getItem('QA_BUG_THREAD_SHIFT_ENTER_SEND') === '1';
+			if (qaBugThreadShiftEnterSend && event.shiftKey && tmid!!) {
+				event.preventDefault();
+				handleSendMessage();
+				return false;
+			}
+
+
 			const withModifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey;
 			const isSending = (sendOnEnter && !withModifier) || (!sendOnEnter && withModifier);
 

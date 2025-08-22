@@ -52,7 +52,7 @@ Disable:
 - Unset the env var or set it to 0, then restart the server.
 
 Reproduce:
-1) In a channel, open Room → Notifications → set Desktop: “Nothing” (muted).
+1) In a channel, open Room → Notifications → set Desktop: "Nothing" (muted).
 2) From another user, send a message in that channel.
 3) With the flag enabled, a desktop notification still appears (bug).
 
@@ -184,3 +184,81 @@ localStorage.removeItem('QA_BUG_THREAD_COUNTER_NOT_DECREMENTED');
 3. Delete the reply
 4. Verify the thread counter still shows 1 instead of 0
 5. Check that the count doesn't update properly
+
+
+## Forwarded Thread Bug: Random strings in forwarded thread messages
+
+This bug simulates the scenario where forwarded thread messages display random strings instead of the actual content.
+
+**Bug Description:**
+When forwarding messages that are part of a thread, the quoted content shows random strings instead of the original message text.
+
+**Reproduction Steps:**
+1. Create a thread with messages
+2. Forward a message from the thread to another channel
+3. The quoted content shows random strings instead of actual text
+
+**Enable Bug:**
+```js
+localStorage.setItem('QA_BUG_FORWARDED_THREAD_RANDOM', '1');
+```
+
+**Disable Bug:**
+```js
+localStorage.removeItem('QA_BUG_FORWARDED_THREAD_RANDOM');
+```
+
+**Files Modified:**
+- `apps/meteor/client/components/message/content/attachments/QuoteAttachment.tsx`
+
+**How the Bug Works:**
+- Detects when a forwarded message is part of a thread
+- Replaces the actual message content with randomly generated strings
+- Affects both plain text and markdown content
+- Creates confusion when users try to understand forwarded thread content
+
+**Testing the Bug:**
+1. Enable the bug flag
+2. Create a thread with meaningful messages
+3. Forward a message from the thread to another channel
+4. Verify the quoted content shows random strings instead of actual text
+5. Check that both text and markdown formatting are corrupted
+
+
+## Thread Shift+Enter Bug: Shift+Enter sends message in threads
+
+This bug simulates the scenario where Shift+Enter sends a message instead of creating a new line when composing in threads.
+
+**Bug Description:**
+In thread composers, pressing Shift+Enter sends the message instead of inserting a new line, breaking the expected behavior.
+
+**Reproduction Steps:**
+1. Open a thread and start composing a message
+2. Press Shift+Enter expecting a new line
+3. Message gets sent instead
+
+**Enable Bug:**
+```js
+localStorage.setItem('QA_BUG_THREAD_SHIFT_ENTER_SEND', '1');
+```
+
+**Disable Bug:**
+```js
+localStorage.removeItem('QA_BUG_THREAD_SHIFT_ENTER_SEND');
+```
+
+**Files Modified:**
+- `apps/meteor/client/views/room/composer/messageBox/MessageBox.tsx`
+
+**How the Bug Works:**
+- Detects when user is composing in a thread (tmid exists)
+- Intercepts Shift+Enter key combination
+- Forces message send instead of new line insertion
+- Breaks the expected Shift+Enter behavior for multi-line composition
+
+**Testing the Bug:**
+1. Enable the bug flag
+2. Open a thread and start typing a message
+3. Press Shift+Enter expecting a new line
+4. Verify the message gets sent instead
+5. Check that normal Enter behavior remains unchanged
