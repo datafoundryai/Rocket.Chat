@@ -19,7 +19,7 @@ Thread counter not decremented	Deleting the last reply in a thread keeps the thr
 3) Thread counter remains 1"	Medium
 Forwarded thread shows random strings	Forwarded thread messages display random strings instead of actual content.	"1) Create a thread with messages
 2) Forward a message from the thread to another channel
-3) Quoted content shows random strings instead of actual text"	Medium
+3) Quoted content shows random strings instead of actual text"	Hard
 Thread Shift+Enter sends message	Shift+Enter sends message instead of new line when composing in threads.	"1) Open a thread and start composing a message
 2) Press Shift+Enter expecting a new line
-3) Message gets sent instead"	Medium
+3) Message gets sent instead"	Hard
